@@ -1,0 +1,5 @@
+# Runtime dependencies, pinned. anthropic is held at the newest release that is at least two weeks old
+# (supply-chain caution); Dependabot proposes updates weekly and pip-audit runs in CI.
+anthropic==2.3.0
+pydantic==2.14.3
+pydantic-settings==2.16.2

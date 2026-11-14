@@ -1,0 +1,26 @@
+# Calls the real Claude API, so it costs money. It never runs on push: start it by hand from the
+# Actions tab. Spend is capped by --max-usd and AGENT_DAY_CAP_USD below.
+name: Live smoke test (manual, costs money)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  ask:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+      AGENT_DAY_CAP_USD: "0.20"
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: pip install -r requirements.txt
+      - run: python -m costagent index sample_corpus --summarize --max-usd 0.02
+      - run: python -m costagent ask "When is a late fee charged, and how much is it?" --max-usd 0.10
+      - run: python -m costagent cost-report --days 1
